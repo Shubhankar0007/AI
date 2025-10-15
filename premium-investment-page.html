@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Investment Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #0a0a0a;
+            --text-secondary: #4a4a4a;
+            --accent: #1a1a1a;
+            --border: rgba(0, 0, 0, 0.08);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body.dark-mode {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #b0b0b0;
+            --accent: #ffffff;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 25px 50px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+            margin-right: 60px;
+            position: relative;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+            opacity: 0.6;
+            transition: var(--transition);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.signup {
+            padding: 10px 24px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-radius: 25px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link.signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-link.signup::after {
+            display: none;
+        }
+
+        /* Dark Mode Toggle */
+        .mode-toggle {
+            width: 70px;
+            height: 32px;
+            background: linear-gradient(135deg, #e8e8ff 0%, #d4d4ff 100%);
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            margin-left: 30px;
+        }
+
+        body.dark-mode .mode-toggle {
+            background: linear-gradient(135deg, #2a2d4e 0%, #1a1d3e 100%);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .toggle-slider {
+            transform: translateX(38px);
+            background: linear-gradient(135deg, #3a3d5e 0%, #2a2d4e 100%);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Custom Sun Icon */
+        .sun-icon {
+            width: 16px;
+            height: 16px;
+            position: relative;
+            transition: var(--transition);
+            opacity: 1;
+        }
+
+        body.dark-mode .sun-icon {
+            opacity: 0;
+            transform: scale(0.5) rotate(180deg);
+        }
+
+        .sun-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #ffa500;
+        }
+
+        /* Custom Moon Icon */
+        .moon-icon {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5) rotate(-180deg);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .moon-icon {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        }
+
+        .moon-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #b8c4ff;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 120px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 300%;
+            height: 100%;
+            background: radial-gradient(circle at center, var(--accent) 0%, transparent 70%);
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        /* Advanced Text Reveal Animation */
+        .main-heading {
+            font-size: 72px;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 30px;
+            min-height: 90px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .reveal-text {
+            position: relative;
+            display: inline-block;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Mask-based reveal effect */
+        .text-mask {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .text-mask::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0.8) 50%,
+                rgba(255, 255, 255, 0) 60%,
+                transparent 100%
+            );
+            mix-blend-mode: overlay;
+            animation: lightSweep 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 0.5s;
+        }
+
+        body.dark-mode .text-mask::before {
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(255, 255, 255, 0) 40%,
+                rgba(255, 255, 255, 0.6) 50%,
+                rgba(255, 255, 255, 0) 60%,
+                transparent 100%
+            );
+        }
+
+        @keyframes lightSweep {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        .reveal-text {
+            clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+            animation: revealText 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes revealText {
+            0% {
+                clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+                filter: blur(10px);
+                opacity: 0;
+            }
+            50% {
+                filter: blur(5px);
+                opacity: 0.5;
+            }
+            100% {
+                clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+                filter: blur(0);
+                opacity: 1;
+            }
+        }
+
+        /* Glow effect for text reveal */
+        .glow-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4) 5%,
+                rgba(255, 255, 255, 0.8) 10%,
+                rgba(255, 255, 255, 0.4) 15%,
+                transparent 20%
+            );
+            transform: translateX(-100%);
+            animation: glowMove 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 0.5s;
+            mix-blend-mode: screen;
+            pointer-events: none;
+            filter: blur(20px);
+            opacity: 0;
+        }
+
+        body.dark-mode .glow-layer {
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(150, 180, 255, 0.3) 5%,
+                rgba(150, 180, 255, 0.6) 10%,
+                rgba(150, 180, 255, 0.3) 15%,
+                transparent 20%
+            );
+        }
+
+        @keyframes glowMove {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(500%);
+                opacity: 0;
+            }
+        }
+
+        .subtitle {
+            font-size: 22px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 60px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            min-height: 70px;
+            position: relative;
+        }
+
+        .subtitle .reveal-text {
+            animation-delay: 1.5s;
+        }
+
+        .subtitle .text-mask::before {
+            animation-delay: 1.5s;
+        }
+
+        .subtitle .glow-layer {
+            animation-delay: 1.5s;
+        }
+
+        /* Enhanced shimmer effect */
+        .shimmer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(105deg,
+                transparent 40%,
+                rgba(255, 255, 255, 0.7) 50%,
+                transparent 60%
+            );
+            animation: shimmer 3s ease-out forwards;
+            animation-delay: 2.5s;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        body.dark-mode .shimmer {
+            background: linear-gradient(105deg,
+                transparent 40%,
+                rgba(150, 180, 255, 0.5) 50%,
+                transparent 60%
+            );
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%) skewX(-15deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100%) skewX(-15deg);
+                opacity: 0;
+            }
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            animation-delay: 3s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-box {
+            flex: 1;
+            padding: 18px 30px;
+            font-size: 16px;
+            border: 2px solid var(--border);
+            border-radius: 50px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: var(--transition);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--bg-primary);
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .search-box::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .analyze-btn {
+            padding: 18px 45px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+        }
+
+        body.dark-mode .analyze-btn {
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            color: #1a1a1a;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1), 0 2px 4px rgba(255, 255, 255, 0.05);
+        }
+
+        .analyze-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        body.dark-mode .analyze-btn::before {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        body.dark-mode .analyze-btn:hover {
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15), 0 3px 8px rgba(255, 255, 255, 0.08);
+        }
+
+        .analyze-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .analyze-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px 30px;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                gap: 20px;
+                justify-content: center;
+            }
+
+            .main-heading {
+                font-size: 48px;
+            }
+
+            .subtitle {
+                font-size: 18px;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .analyze-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">LOGO</div>
+            <nav class="nav-links">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#help" class="nav-link">How We Help You</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#resources" class="nav-link">Resources</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <a href="#signup" class="nav-link signup">Sign Up</a>
+            </nav>
+        </div>
+        <div class="mode-toggle" onclick="toggleDarkMode()">
+            <div class="toggle-slider">
+                <div class="sun-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+                    </svg>
+                </div>
+                <div class="moon-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h1 class="main-heading">
+            <span class="text-mask">
+                <span class="reveal-text">Investing or Gambling? Find Out.</span>
+                <div class="glow-layer"></div>
+                <div class="shimmer"></div>
+            </span>
+        </h1>
+        
+        <p class="subtitle">
+            <span class="text-mask">
+                <span class="reveal-text">Where intelligence meets intuition — your gateway to refined investment decisions. Sophisticated, seamless, and instantly actionable.</span>
+                <div class="glow-layer"></div>
+                <div class="shimmer"></div>
+            </span>
+        </p>
+
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Enter stock symbol or company name">
+            <button class="analyze-btn" onclick="analyze()">Analyze</button>
+        </div>
+    </main>
+
+    <script>
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (link.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    const target = link.getAttribute('href');
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Analyze function
+        function analyze() {
+            const searchBox = document.querySelector('.search-box');
+            const value = searchBox.value.trim();
+            
+            if (value) {
+                // Create ripple effect
+                const btn = document.querySelector('.analyze-btn');
+                btn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    btn.style.transform = '';
+                    // Here you would navigate to the analysis page
+                    alert('Analyzing: ' + value);
+                }, 200);
+            } else {
+                searchBox.focus();
+                searchBox.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    searchBox.style.animation = '';
+                }, 500);
+            }
+        }
+
+        // Add shake animation for empty search
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Enter key to analyze
+        document.querySelector('.search-box').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                analyze();
+            }
+        });
+
+        // Add subtle parallax effect on mouse move for premium feel
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            const glowLayers = document.querySelectorAll('.glow-layer');
+            glowLayers.forEach(layer => {
+                layer.style.transform = `translateX(${-100 + (x * 10)}%) translateY(${(y - 0.5) * 20}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
