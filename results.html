@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Analysis Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #0a0a0a;
+            --text-secondary: #4a4a4a;
+            --accent: #1a1a1a;
+            --border: rgba(0, 0, 0, 0.08);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --success: #00C853;
+            --warning: #FF6F00;
+            --danger: #D50000;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition);
+            min-height: 100vh;
+            overflow-x: hidden;
+            opacity: 0;
+            animation: pageReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes pageReveal {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body.dark-mode {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #b0b0b0;
+            --accent: #ffffff;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Header Styles - Same as front page */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 25px 50px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+            margin-right: 60px;
+            position: relative;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+            opacity: 0.6;
+            transition: var(--transition);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+            letter-spacing: 0.3px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.signup {
+            padding: 10px 24px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-radius: 25px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link.signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-link.signup::after {
+            display: none;
+        }
+
+        /* Dark Mode Toggle - Same as front page */
+        .mode-toggle {
+            width: 70px;
+            height: 32px;
+            background: linear-gradient(135deg, #e8e8ff 0%, #d4d4ff 100%);
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            margin-left: 30px;
+        }
+
+        body.dark-mode .mode-toggle {
+            background: linear-gradient(135deg, #2a2d4e 0%, #1a1d3e 100%);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .toggle-slider {
+            transform: translateX(38px);
+            background: linear-gradient(135deg, #3a3d5e 0%, #2a2d4e 100%);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .sun-icon {
+            width: 16px;
+            height: 16px;
+            position: relative;
+            transition: var(--transition);
+            opacity: 1;
+        }
+
+        body.dark-mode .sun-icon {
+            opacity: 0;
+            transform: scale(0.5) rotate(180deg);
+        }
+
+        .sun-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #ffa500;
+        }
+
+        .moon-icon {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5) rotate(-180deg);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .moon-icon {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        }
+
+        .moon-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #b8c4ff;
+        }
+
+        /* Main Results Content */
+        .results-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 50px 100px;
+        }
+
+        /* Result Header Section */
+        .result-header {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+
+        .company-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .verdict {
+            font-size: 64px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s forwards;
+        }
+
+        .verdict.positive {
+            background: linear-gradient(135deg, #00C853 0%, #00E676 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .verdict.negative {
+            background: linear-gradient(135deg, #D50000 0%, #FF5252 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .verdict::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 4px;
+            background: currentColor;
+            border-radius: 10px;
+            opacity: 0.3;
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--bg-secondary);
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 20px;
+            border: 2px solid var(--border);
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s forwards;
+        }
+
+        .confidence-badge.high {
+            color: #00C853;
+            border-color: rgba(0, 200, 83, 0.3);
+        }
+
+        .confidence-badge.low {
+            color: #FF6F00;
+            border-color: rgba(255, 111, 0, 0.3);
+        }
+
+        /* Explanation Section */
+        .explanation-section {
+            background: var(--bg-secondary);
+            border-radius: 30px;
+            padding: 60px;
+            margin-bottom: 60px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.8s forwards;
+        }
+
+        .explanation-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+        }
+
+        .explanation-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .explanation-text {
+            font-size: 18px;
+            line-height: 1.9;
+            color: var(--text-secondary);
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+
+        .explanation-text strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Key Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 1s forwards;
+        }
+
+        .metric-card {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 35px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
+        }
+
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        .metric-change {
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .metric-change.positive {
+            color: #00C853;
+        }
+
+        .metric-change.negative {
+            color: #D50000;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 1.2s forwards;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+        }
+
+        .chart-container {
+            background: var(--bg-secondary);
+            border-radius: 30px;
+            padding: 40px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--text-primary);
+            letter-spacing: -0.3px;
+        }
+
+        .chart-canvas {
+            position: relative;
+            height: 350px;
+        }
+
+        /* Action Buttons Section */
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 80px;
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 1.4s forwards;
+        }
+
+        .action-btn {
+            padding: 18px 45px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .action-btn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .btn-download {
+            background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+            color: #1a1a1a;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1), 0 2px 4px rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        body.dark-mode .btn-download:hover {
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.15), 0 3px 8px rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-refresh,
+        .btn-compare {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-refresh:hover,
+        .btn-compare:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Icons for buttons */
+        .btn-icon {
+            width: 20px;
+            height: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px 30px;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                gap: 20px;
+                justify-content: center;
+            }
+
+            .results-container {
+                padding: 60px 30px;
+            }
+
+            .verdict {
+                font-size: 42px;
+            }
+
+            .explanation-section {
+                padding: 40px 30px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                padding: 30px 20px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo" onclick="window.location.href='premium-investment-page.html'">LOGO</div>
+            <nav class="nav-links">
+                <a href="premium-investment-page.html#home" class="nav-link">Home</a>
+                <a href="premium-investment-page.html#help" class="nav-link">How We Help You</a>
+                <a href="premium-investment-page.html#features" class="nav-link">Features</a>
+                <a href="premium-investment-page.html#pricing" class="nav-link">Pricing</a>
+                <a href="premium-investment-page.html#resources" class="nav-link">Resources</a>
+                <a href="premium-investment-page.html#about" class="nav-link">About</a>
+                <a href="premium-investment-page.html#contact" class="nav-link">Contact</a>
+                <a href="#signup" class="nav-link signup">Sign Up</a>
+            </nav>
+        </div>
+        <div class="mode-toggle" onclick="toggleDarkMode()">
+            <div class="toggle-slider">
+                <div class="sun-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+                    </svg>
+                </div>
+                <div class="moon-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="results-container">
+        <!-- Result Header -->
+        <div class="result-header">
+            <div class="company-name" id="companyName">APPLE INC.</div>
+            <h1 class="verdict positive" id="verdict">WORTH INVESTING</h1>
+            <div class="confidence-badge high" id="confidenceBadge">
+                <span id="confidenceText">High Confidence • 94%</span>
+            </div>
+        </div>
+
+        <!-- Explanation Section -->
+        <section class="explanation-section">
+            <h2 class="explanation-title">Investment Analysis Summary</h2>
+            <p class="explanation-text" id="explanationText">
+                Based on comprehensive market analysis and technical indicators, <strong>Apple Inc.</strong> demonstrates exceptional investment potential. The company shows <strong>robust financial health</strong> with a Price-to-Earnings ratio of 28.5, indicating strong market confidence. Revenue growth has been <strong>consistent at 12% year-over-year</strong>, supported by innovative product launches and expanding service revenue streams. 
+                <br><br>
+                Technical analysis reveals <strong>strong momentum indicators</strong> with the stock trading above its 200-day moving average, suggesting a sustained upward trend. The company's <strong>debt-to-equity ratio of 1.8</strong> remains within healthy parameters, while maintaining a <strong>dividend yield of 0.5%</strong> with consistent payout history. Market sentiment analysis from recent earnings calls and analyst reports indicates <strong>overwhelmingly positive outlook</strong>, with 85% of analysts rating it as "Buy" or "Strong Buy". 
+                <br><br>
+                Industry positioning shows Apple maintaining <strong>dominant market share</strong> in premium smartphone and wearables segments, with expanding opportunities in augmented reality and services. The recommendation is backed by data from peer-reviewed financial research and real-time market analytics.
+            </p>
+        </section>
+
+        <!-- Key Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Market Cap</div>
+                <div class="metric-value">$2.89T</div>
+                <div class="metric-change positive">↑ 8.2% YTD</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">P/E Ratio</div>
+                <div class="metric-value">28.5</div>
+                <div class="metric-change positive">Industry Avg: 24.3</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Revenue Growth</div>
+                <div class="metric-value">12.4%</div>
+                <div class="metric-change positive">↑ YoY</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Analyst Rating</div>
+                <div class="metric-value">4.6/5</div>
+                <div class="metric-change positive">85% Buy</div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <section class="charts-section">
+            <div class="charts-grid">
+                <!-- Stock Price Chart -->
+                <div class="chart-container">
+                    <h3 class="chart-title">Stock Price Performance (12 Months)</h3>
+                    <div class="chart-canvas">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Revenue Chart -->
+                <div class="chart-container">
+                    <h3 class="chart-title">Quarterly Revenue Growth</h3>
+                    <div class="chart-canvas">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Financial Health Chart -->
+                <div class="chart-container">
+                    <h3 class="chart-title">Financial Health Indicators</h3>
+                    <div class="chart-canvas">
+                        <canvas id="healthChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Sentiment Analysis Chart -->
+                <div class="chart-container">
+                    <h3 class="chart-title">Market Sentiment Analysis</h3>
+                    <div class="chart-canvas">
+                        <canvas id="sentimentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="action-btn btn-download" onclick="downloadReport()">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Download Report
+            </button>
+            <button class="action-btn btn-refresh" onclick="refreshAnalysis()">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+                </svg>
+                Refresh Analysis
+            </button>
+            <button class="action-btn btn-compare" onclick="compareStocks()">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11H3v10h6V11zM21 3h-6v18h6V3zM15 7H9v14h6V7z"/>
+                </svg>
+                Compare Stocks
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            updateChartColors();
+        }
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // Get company from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const company = urlParams.get('company') || 'Apple Inc.';
+
+        // Mock data generator (will be replaced with backend)
+        const mockData = {
+            'Apple Inc.': {
+                verdict: 'WORTH INVESTING',
+                positive: true,
+                confidence: 94,
+                metrics: {
+                    marketCap: '$2.89T',
+                    peRatio: '28.5',
+                    revenueGrowth: '12.4%',
+                    analystRating: '4.6/5'
+                },
+                explanation: `Based on comprehensive market analysis and technical indicators, <strong>Apple Inc.</strong> demonstrates exceptional investment potential. The company shows <strong>robust financial health</strong> with a Price-to-Earnings ratio of 28.5, indicating strong market confidence. Revenue growth has been <strong>consistent at 12% year-over-year</strong>, supported by innovative product launches and expanding service revenue streams. 
+                <br><br>
+                Technical analysis reveals <strong>strong momentum indicators</strong> with the stock trading above its 200-day moving average, suggesting a sustained upward trend. The company's <strong>debt-to-equity ratio of 1.8</strong> remains within healthy parameters, while maintaining a <strong>dividend yield of 0.5%</strong> with consistent payout history. Market sentiment analysis from recent earnings calls and analyst reports indicates <strong>overwhelmingly positive outlook</strong>, with 85% of analysts rating it as "Buy" or "Strong Buy". 
+                <br><br>
+                Industry positioning shows Apple maintaining <strong>dominant market share</strong> in premium smartphone and wearables segments, with expanding opportunities in augmented reality and services. The recommendation is backed by data from peer-reviewed financial research and real-time market analytics.`
+            },
+            'default': {
+                verdict: 'NOT RECOMMENDED',
+                positive: false,
+                confidence: 72,
+                metrics: {
+                    marketCap: '$45.2B',
+                    peRatio: '42.8',
+                    revenueGrowth: '-3.2%',
+                    analystRating: '2.8/5'
+                },
+                explanation: `After thorough analysis of market conditions and company fundamentals, we recommend <strong>caution</strong> regarding this investment. The company exhibits several concerning indicators that suggest elevated risk levels. The <strong>P/E ratio of 42.8</strong> significantly exceeds industry averages, indicating potential overvaluation relative to earnings capacity.
+                <br><br>
+                Recent quarterly reports show <strong>declining revenue growth at -3.2%</strong>, raising questions about business sustainability and market competitiveness. Technical indicators reveal the stock trading below key moving averages, with <strong>weakening momentum</strong> and increased volatility. The debt-to-equity ratio has risen to concerning levels, potentially limiting financial flexibility for future growth initiatives.
+                <br><br>
+                Market sentiment analysis reveals <strong>mixed analyst opinions</strong>, with only 35% recommending "Buy" positions. Industry headwinds and competitive pressures present additional challenges. While the company has historical strengths, current metrics suggest waiting for more favorable entry points or improved fundamental performance before considering investment.`
+            }
+        };
+
+        // Load company data
+        const companyData = mockData[company] || mockData['default'];
+        document.getElementById('companyName').textContent = company.toUpperCase();
+        document.getElementById('verdict').textContent = companyData.verdict;
+        document.getElementById('verdict').className = `verdict ${companyData.positive ? 'positive' : 'negative'}`;
+        document.getElementById('confidenceBadge').className = `confidence-badge ${companyData.confidence > 80 ? 'high' : 'low'}`;
+        document.getElementById('confidenceText').textContent = `${companyData.confidence > 80 ? 'High' : 'Moderate'} Confidence • ${companyData.confidence}%`;
+        document.getElementById('explanationText').innerHTML = companyData.explanation;
+
+        // Get color based on dark mode
+        function getChartColors() {
+            const isDark = document.body.classList.contains('dark-mode');
+            return {
+                text: isDark ? '#f0f0f0' : '#0a0a0a',
+                textSecondary: isDark ? '#b0b0b0' : '#4a4a4a',
+                grid: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)',
+                primary: isDark ? '#ffffff' : '#1a1a1a',
+                positive: '#00C853',
+                negative: '#D50000',
+                warning: '#FF6F00'
+            };
+        }
+
+        let charts = {};
+
+        // Initialize charts
+        function initCharts() {
+            const colors = getChartColors();
+
+            // Stock Price Chart
+            const priceCtx = document.getElementById('priceChart').getContext('2d');
+            charts.price = new Chart(priceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                    datasets: [{
+                        label: 'Stock Price',
+                        data: [165, 172, 178, 182, 175, 188, 195, 202, 198, 210, 218, 225],
+                        borderColor: colors.positive,
+                        backgroundColor: `${colors.positive}20`,
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: colors.positive,
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: colors.primary,
+                            titleColor: colors.text,
+                            bodyColor: colors.text,
+                            padding: 12,
+                            borderColor: colors.grid,
+                            borderWidth: 1,
+                            displayColors: false,
+                            callbacks: {
+                                label: (context) => `$${context.parsed.y}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: colors.grid,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: colors.textSecondary,
+                                font: {
+                                    size: 12,
+                                    weight: 500
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: colors.grid,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: colors.textSecondary,
+                                font: {
+                                    size: 12,
+                                    weight: 500
+                                },
+                                callback: (value) => `$${value}`
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            charts.revenue = new Chart(revenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Q1 2024', 'Q2 2024', 'Q3 2024', 'Q4 2024'],
+                    datasets: [{
+                        label: 'Revenue (Billions)',
+                        data: [94.8, 97.3, 101.2, 105.6],
+                        backgroundColor: [
+                            `${colors.positive}80`,
+                            `${colors.positive}90`,
+                            `${colors.positive}A0`,
+                            `${colors.positive}B0`
+                        ],
+                        borderColor: colors.positive,
+                        borderWidth: 2,
+                        borderRadius: 10,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: colors.primary,
+                            titleColor: colors.text,
+                            bodyColor: colors.text,
+                            padding: 12,
+                            borderColor: colors.grid,
+                            borderWidth: 1,
+                            displayColors: false,
+                            callbacks: {
+                                label: (context) => `$${context.parsed.y}B`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: colors.textSecondary,
+                                font: {
+                                    size: 12,
+                                    weight: 500
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: colors.grid,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: colors.textSecondary,
+                                font: {
+                                    size: 12,
+                                    weight: 500
+                                },
+                                callback: (value) => `$${value}B`
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Financial Health Chart (Radar)
+            const healthCtx = document.getElementById('healthChart').getContext('2d');
+            charts.health = new Chart(healthCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Profitability', 'Liquidity', 'Growth', 'Efficiency', 'Stability'],
+                    datasets: [{
+                        label: 'Score',
+                        data: [92, 85, 88, 90, 87],
+                        backgroundColor: `${colors.positive}30`,
+                        borderColor: colors.positive,
+                        borderWidth: 3,
+                        pointBackgroundColor: colors.positive,
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: colors.positive,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: colors.primary,
+                            titleColor: colors.text,
+                            bodyColor: colors.text,
+                            padding: 12,
+                            borderColor: colors.grid,
+                            borderWidth: 1,
+                            displayColors: false,
+                            callbacks: {
+                                label: (context) => `Score: ${context.parsed.r}/100`
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                stepSize: 20,
+                                color: colors.textSecondary,
+                                backdropColor: 'transparent',
+                                font: {
+                                    size: 11,
+                                    weight: 500
+                                }
+                            },
+                            grid: {
+                                color: colors.grid
+                            },
+                            angleLines: {
+                                color: colors.grid
+                            },
+                            pointLabels: {
+                                color: colors.text,
+                                font: {
+                                    size: 13,
+                                    weight: 600
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Sentiment Analysis Chart (Doughnut)
+            const sentimentCtx = document.getElementById('sentimentChart').getContext('2d');
+            charts.sentiment = new Chart(sentimentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Strong Buy', 'Buy', 'Hold', 'Sell'],
+                    datasets: [{
+                        data: [45, 40, 12, 3],
+                        backgroundColor: [
+                            colors.positive,
+                            `${colors.positive}80`,
+                            colors.warning,
+                            colors.negative
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: colors.text,
+                                padding: 20,
+                                font: {
+                                    size: 13,
+                                    weight: 600
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: colors.primary,
+                            titleColor: colors.text,
+                            bodyColor: colors.text,
+                            padding: 12,
+                            borderColor: colors.grid,
+                            borderWidth: 1,
+                            callbacks: {
+                                label: (context) => `${context.label}: ${context.parsed}% of analysts`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update chart colors on dark mode toggle
+        function updateChartColors() {
+            Object.values(charts).forEach(chart => chart.destroy());
+            initCharts();
+        }
+
+        // Initialize charts on load
+        initCharts();
+
+        // Action button functions
+        function downloadReport() {
+            // Mock download functionality
+            const btn = document.querySelector('.btn-download');
+            btn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Downloaded!';
+            setTimeout(() => {
+                btn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Download Report';
+            }, 2000);
+        }
+
+        function refreshAnalysis() {
+            window.location.href = `loading.html?company=${encodeURIComponent(company)}`;
+        }
+
+        function compareStocks() {
+            alert('Compare Stocks feature coming soon!');
+        }
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (link.getAttribute('href').includes('#')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
