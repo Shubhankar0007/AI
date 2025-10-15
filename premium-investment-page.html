@@ -551,6 +551,379 @@
             transform: translateY(0) scale(0.98);
         }
 
+        /* Loading Animation Styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.dark-mode .loading-overlay {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+        }
+
+        .loading-overlay.fade-out {
+            opacity: 0;
+        }
+
+        .loading-container {
+            text-align: center;
+            position: relative;
+        }
+
+        .dollar-sign-container {
+            position: relative;
+            width: 120px;
+            height: 180px;
+            margin: 0 auto 40px;
+        }
+
+        .dollar-sign {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform: scale(0.8);
+            animation: dollarPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes dollarPulse {
+            0%, 100% { transform: scale(0.8); }
+            50% { transform: scale(0.85); }
+        }
+
+        .dollar-line {
+            position: absolute;
+            left: 50%;
+            width: 4px;
+            background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            transform: translateX(-50%);
+            border-radius: 2px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .dollar-line.top-line {
+            top: 0;
+            height: 25px;
+            clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+            animation: revealLine 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        .dollar-line.bottom-line {
+            bottom: 0;
+            height: 25px;
+            clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+            animation: revealLine 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes revealLine {
+            0% { clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%); }
+            25% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+            75% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+            100% { clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%); }
+        }
+
+        .dollar-s {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 80px;
+            height: 140px;
+            transform: translateX(-50%);
+        }
+
+        .s-curve {
+            position: absolute;
+            width: 80px;
+            height: 40px;
+            border: 6px solid var(--text-primary);
+            border-radius: 40px;
+            clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .s-curve.top-curve {
+            top: 0;
+            border-bottom: none;
+            border-left: none;
+            animation: revealCurve 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            animation-delay: 0.3s;
+        }
+
+        .s-curve.middle-curve {
+            top: 30px;
+            border-top: none;
+            border-right: none;
+            animation: revealCurve 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            animation-delay: 0.8s;
+        }
+
+        .s-curve.bottom-curve {
+            bottom: 0;
+            border-top: none;
+            border-left: none;
+            animation: revealCurve 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            animation-delay: 1.3s;
+        }
+
+        @keyframes revealCurve {
+            0% { clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%); opacity: 0; }
+            25% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 1; }
+            75% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 1; }
+            100% { clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%); opacity: 0; }
+        }
+
+        .loading-text {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+            animation: textFade 2s ease-in-out infinite;
+        }
+
+        @keyframes textFade {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .loading-progress {
+            width: 300px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--text-primary), var(--text-secondary));
+            border-radius: 2px;
+            transform: translateX(-100%);
+            animation: progressMove 2s ease-in-out infinite;
+        }
+
+        @keyframes progressMove {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(0%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Results Page Styles */
+        .results-page {
+            min-height: 100vh;
+            background: var(--bg-primary);
+        }
+
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 50px;
+        }
+
+        .recommendation-section {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 40px;
+            background: var(--bg-secondary);
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recommendation-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(0, 0, 0, 0.02) 100%);
+            pointer-events: none;
+        }
+
+        .recommendation-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .recommendation-title.positive {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .recommendation-title.negative {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .company-name {
+            font-size: 28px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
+
+        .analysis-explanation {
+            max-width: 800px;
+            margin: 0 auto 60px;
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            text-align: left;
+            background: var(--bg-primary);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .charts-section {
+            margin-bottom: 60px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #f0f0f0 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .chart-placeholder {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #2a2a2a 100%);
+        }
+
+        .chart-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: chartShimmer 2s infinite;
+        }
+
+        @keyframes chartShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .compare-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .action-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header {
@@ -579,6 +952,60 @@
 
             .analyze-btn {
                 width: 100%;
+            }
+
+            .loading-container {
+                padding: 20px;
+            }
+
+            .dollar-sign-container {
+                width: 100px;
+                height: 150px;
+            }
+
+            .loading-text {
+                font-size: 20px;
+            }
+
+            .loading-progress {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 80px 30px;
+            }
+
+            .main-heading {
+                font-size: 36px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            .search-box {
+                padding: 15px 25px;
+                font-size: 14px;
+            }
+
+            .analyze-btn {
+                padding: 15px 35px;
+                font-size: 14px;
+            }
+
+            .dollar-sign-container {
+                width: 80px;
+                height: 120px;
+            }
+
+            .loading-text {
+                font-size: 18px;
+            }
+
+            .loading-progress {
+                width: 200px;
             }
         }
     </style>
@@ -675,14 +1102,67 @@
                 btn.style.transform = 'scale(0.95)';
                 setTimeout(() => {
                     btn.style.transform = '';
-                    // Here you would navigate to the analysis page
-                    alert('Analyzing: ' + value);
+                    // Store the company name for the results page
+                    localStorage.setItem('analyzedCompany', value);
+                    // Show loading animation and navigate to results
+                    showLoadingAnimation();
                 }, 200);
             } else {
                 searchBox.focus();
                 searchBox.style.animation = 'shake 0.5s';
                 setTimeout(() => {
                     searchBox.style.animation = '';
+                }, 500);
+            }
+        }
+
+        // Loading animation function
+        function showLoadingAnimation() {
+            // Create loading overlay
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.className = 'loading-overlay';
+            loadingOverlay.innerHTML = `
+                <div class="loading-container">
+                    <div class="dollar-sign-container">
+                        <div class="dollar-sign">
+                            <div class="dollar-line top-line"></div>
+                            <div class="dollar-s">
+                                <div class="s-curve top-curve"></div>
+                                <div class="s-curve middle-curve"></div>
+                                <div class="s-curve bottom-curve"></div>
+                            </div>
+                            <div class="dollar-line bottom-line"></div>
+                        </div>
+                        <div class="loading-text">Analyzing Investment Potential...</div>
+                        <div class="loading-progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(loadingOverlay);
+            
+            // Trigger animation
+            setTimeout(() => {
+                loadingOverlay.classList.add('active');
+            }, 50);
+            
+            // Simulate loading time and show results
+            setTimeout(() => {
+                showResultsPage();
+            }, 4000);
+        }
+
+        // Show results page
+        function showResultsPage() {
+            const loadingOverlay = document.querySelector('.loading-overlay');
+            if (loadingOverlay) {
+                loadingOverlay.classList.add('fade-out');
+                setTimeout(() => {
+                    loadingOverlay.remove();
+                    document.body.innerHTML = getResultsPageHTML();
+                    initializeResultsPage();
                 }, 500);
             }
         }
@@ -715,6 +1195,704 @@
                 layer.style.transform = `translateX(${-100 + (x * 10)}%) translateY(${(y - 0.5) * 20}px)`;
             });
         });
+
+        // Generate results page HTML
+        function getResultsPageHTML() {
+            const companyName = localStorage.getItem('analyzedCompany') || 'Sample Company';
+            const isPositive = Math.random() > 0.3; // 70% chance of positive recommendation
+            
+            return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Analysis Results - ${companyName}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --text-primary: #0a0a0a;
+            --text-secondary: #4a4a4a;
+            --accent: #1a1a1a;
+            --border: rgba(0, 0, 0, 0.08);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body.dark-mode {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #f0f0f0;
+            --text-secondary: #b0b0b0;
+            --accent: #ffffff;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 25px 50px;
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+            margin-right: 60px;
+            position: relative;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+            opacity: 0.6;
+            transition: var(--transition);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            position: relative;
+            transition: var(--transition);
+            letter-spacing: 0.3px;
+            cursor: pointer;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.signup {
+            padding: 10px 24px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-radius: 25px;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link.signup:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-link.signup::after {
+            display: none;
+        }
+
+        /* Dark Mode Toggle */
+        .mode-toggle {
+            width: 70px;
+            height: 32px;
+            background: linear-gradient(135deg, #e8e8ff 0%, #d4d4ff 100%);
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            margin-left: 30px;
+        }
+
+        body.dark-mode .mode-toggle {
+            background: linear-gradient(135deg, #2a2d4e 0%, #1a1d3e 100%);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .toggle-slider {
+            transform: translateX(38px);
+            background: linear-gradient(135deg, #3a3d5e 0%, #2a2d4e 100%);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .sun-icon {
+            width: 16px;
+            height: 16px;
+            position: relative;
+            transition: var(--transition);
+            opacity: 1;
+        }
+
+        body.dark-mode .sun-icon {
+            opacity: 0;
+            transform: scale(0.5) rotate(180deg);
+        }
+
+        .sun-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #ffa500;
+        }
+
+        .moon-icon {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5) rotate(-180deg);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        body.dark-mode .moon-icon {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        }
+
+        .moon-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #b8c4ff;
+        }
+
+        /* Results Page Styles */
+        .results-page {
+            min-height: 100vh;
+            background: var(--bg-primary);
+            opacity: 0;
+            animation: fadeInResults 1s ease-out forwards;
+        }
+
+        @keyframes fadeInResults {
+            to { opacity: 1; }
+        }
+
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 50px;
+        }
+
+        .recommendation-section {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 40px;
+            background: var(--bg-secondary);
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(30px);
+            animation: slideInUp 0.8s ease-out forwards;
+            animation-delay: 0.2s;
+        }
+
+        @keyframes slideInUp {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .recommendation-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(0, 0, 0, 0.02) 100%);
+            pointer-events: none;
+        }
+
+        .recommendation-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+            position: relative;
+            z-index: 1;
+            transform: scale(0.8);
+            animation: scaleIn 0.6s ease-out forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes scaleIn {
+            to { transform: scale(1); }
+        }
+
+        .recommendation-title.positive {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .recommendation-title.negative {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .company-name {
+            font-size: 28px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-weight: 600;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        .analysis-explanation {
+            max-width: 800px;
+            margin: 0 auto 60px;
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            text-align: left;
+            background: var(--bg-primary);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transform: translateY(30px);
+            opacity: 0;
+            animation: slideInUp 0.8s ease-out forwards;
+            animation-delay: 1s;
+        }
+
+        .charts-section {
+            margin-bottom: 60px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+            animation-delay: 1.3s;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            transform: translateY(20px);
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+
+        .chart-container:nth-child(1) { animation-delay: 1.5s; }
+        .chart-container:nth-child(2) { animation-delay: 1.7s; }
+        .chart-container:nth-child(3) { animation-delay: 1.9s; }
+        .chart-container:nth-child(4) { animation-delay: 2.1s; }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #f0f0f0 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .chart-placeholder {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #2a2a2a 100%);
+        }
+
+        .chart-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: chartShimmer 2s infinite;
+        }
+
+        @keyframes chartShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+            animation-delay: 2.3s;
+        }
+
+        .action-btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            animation-delay: 2.5s;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            animation-delay: 2.7s;
+        }
+
+        .compare-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            animation-delay: 2.9s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .action-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 20px 30px;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                gap: 20px;
+                justify-content: center;
+            }
+
+            .results-container {
+                padding: 20px 30px;
+            }
+
+            .recommendation-title {
+                font-size: 36px;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo" onclick="goHome()">LOGO</div>
+            <nav class="nav-links">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#help" class="nav-link">How We Help You</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#resources" class="nav-link">Resources</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <a href="#signup" class="nav-link signup">Sign Up</a>
+            </nav>
+        </div>
+        <div class="mode-toggle" onclick="toggleDarkMode()">
+            <div class="toggle-slider">
+                <div class="sun-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+                    </svg>
+                </div>
+                <div class="moon-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="results-page">
+        <div class="results-container">
+            <div class="recommendation-section">
+                <h1 class="recommendation-title ${isPositive ? 'positive' : 'negative'}">
+                    ${isPositive ? 'WORTH INVESTING' : 'NOT RECOMMENDED'}
+                </h1>
+                <div class="company-name">${companyName}</div>
+                <div class="analysis-explanation">
+                    ${getAnalysisText(companyName, isPositive)}
+                </div>
+            </div>
+
+            <div class="charts-section">
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3 class="chart-title">Financial Performance</h3>
+                        <div class="chart-placeholder">
+                            Revenue Growth & Profit Margins
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 class="chart-title">Market Position</h3>
+                        <div class="chart-placeholder">
+                            Market Share & Competition Analysis
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 class="chart-title">Risk Assessment</h3>
+                        <div class="chart-placeholder">
+                            Volatility & Risk Metrics
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 class="chart-title">Future Outlook</h3>
+                        <div class="chart-placeholder">
+                            Growth Projections & Forecasts
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn download-btn" onclick="downloadReport()">
+                    Download Report
+                </button>
+                <button class="action-btn refresh-btn" onclick="refreshAnalysis()">
+                    Refresh Analysis
+                </button>
+                <button class="action-btn compare-btn" onclick="compareCompanies()">
+                    Compare Companies
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // Dark mode toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        // Go back to home page
+        function goHome() {
+            window.location.reload();
+        }
+
+        // Action button functions
+        function downloadReport() {
+            alert('Downloading comprehensive investment report...');
+        }
+
+        function refreshAnalysis() {
+            alert('Refreshing analysis with latest data...');
+        }
+
+        function compareCompanies() {
+            alert('Opening company comparison tool...');
+        }
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (link.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+            `;
+        }
+
+        // Generate analysis text based on recommendation
+        function getAnalysisText(companyName, isPositive) {
+            if (isPositive) {
+                return `
+                    <strong>Investment Recommendation: BUY</strong><br><br>
+                    
+                    Our comprehensive AI analysis indicates that <strong>${companyName}</strong> presents a compelling investment opportunity. The company demonstrates strong fundamentals across multiple key metrics:<br><br>
+                    
+                    <strong>Financial Strength:</strong> Revenue growth of 23% year-over-year with expanding profit margins and robust cash flow generation. The company maintains a healthy debt-to-equity ratio and strong working capital management.<br><br>
+                    
+                    <strong>Market Position:</strong> Leading market share in its sector with sustainable competitive advantages and strong brand recognition. The company has successfully defended its position against emerging competitors.<br><br>
+                    
+                    <strong>Growth Prospects:</strong> Multiple growth catalysts identified including expansion into emerging markets, innovative product pipeline, and strategic partnerships that position the company for continued success.<br><br>
+                    
+                    <strong>Risk Assessment:</strong> While all investments carry risk, ${companyName} exhibits lower volatility compared to sector peers and maintains strong risk management practices.
+                `;
+            } else {
+                return `
+                    <strong>Investment Recommendation: AVOID</strong><br><br>
+                    
+                    Our AI analysis reveals several concerning factors that suggest <strong>${companyName}</strong> may not be suitable for investment at this time:<br><br>
+                    
+                    <strong>Financial Concerns:</strong> Declining revenue trends over the past quarters with shrinking profit margins. The company faces increasing debt levels and cash flow challenges that raise sustainability questions.<br><br>
+                    
+                    <strong>Market Challenges:</strong> Losing market share to competitors with limited differentiation in products or services. The company struggles with brand perception and customer retention issues.<br><br>
+                    
+                    <strong>Operational Issues:</strong> Management turnover, regulatory challenges, and operational inefficiencies indicate potential structural problems that may take time to resolve.<br><br>
+                    
+                    <strong>Risk Factors:</strong> High volatility, exposure to cyclical market conditions, and limited diversification create elevated investment risks that outweigh potential returns.
+                `;
+            }
+        }
+
+        // Initialize results page
+        function initializeResultsPage() {
+            // Check for saved dark mode preference
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.body.classList.add('dark-mode');
+            }
+        }
+    </script>
+</body>
+</html>`;
+        }
     </script>
 </body>
 </html>
