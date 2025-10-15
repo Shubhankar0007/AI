@@ -1,1 +1,1 @@
-# AI
+# AI for business professionals
