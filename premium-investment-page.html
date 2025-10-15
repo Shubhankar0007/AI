@@ -551,6 +551,463 @@
             transform: translateY(0) scale(0.98);
         }
 
+        /* Loading Animation Styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+        }
+
+        .loading-overlay.fade-out {
+            opacity: 0;
+        }
+
+        .loading-container {
+            text-align: center;
+            position: relative;
+        }
+
+        .dollar-sign-container {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .dollar-sign {
+            font-size: 120px;
+            font-weight: 900;
+            color: var(--text-primary);
+            position: relative;
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(-50px) scale(0.8);
+            animation: dollarEmergence 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .dollar-sign {
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes dollarEmergence {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.8);
+                filter: blur(10px);
+            }
+            20% {
+                opacity: 0.3;
+                transform: translateY(-30px) scale(0.9);
+                filter: blur(5px);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translateY(-10px) scale(1.05);
+                filter: blur(2px);
+            }
+            80% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+                filter: blur(3px);
+            }
+        }
+
+        .loading-text {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 20px;
+            opacity: 0;
+            animation: fadeInText 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation-delay: 0.5s;
+            letter-spacing: 0.5px;
+        }
+
+        .loading-subtext {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            opacity: 0;
+            animation: fadeInText 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation-delay: 0.8s;
+            font-weight: 400;
+        }
+
+        @keyframes fadeInText {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading-progress {
+            width: 300px;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--text-secondary) 100%);
+            border-radius: 2px;
+            width: 0;
+            animation: progressFill 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: progressShimmer 1.5s infinite;
+        }
+
+        @keyframes progressFill {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes progressShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Results Page Styles */
+        .results-page {
+            min-height: 100vh;
+            background: var(--bg-primary);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .results-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 300%;
+            height: 100%;
+            background: radial-gradient(circle at center, var(--accent) 0%, transparent 70%);
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        .results-page.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .results-content {
+            padding: 120px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .company-name {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: companyNameSlide 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes companyNameSlide {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .recommendation {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            padding: 20px 40px;
+            border-radius: 20px;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recommendation.positive {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .recommendation.negative {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+        }
+
+        .recommendation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: recommendationShimmer 2s infinite;
+        }
+
+        .recommendation {
+            animation: recommendationPulse 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        @keyframes recommendationPulse {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes recommendationShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .explanation {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto 60px;
+            text-align: center;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            animation: explanationFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes explanationFade {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .chart-card {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: cardSlideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .chart-card:nth-child(1) { animation-delay: 0.2s; }
+        .chart-card:nth-child(2) { animation-delay: 0.4s; }
+        .chart-card:nth-child(3) { animation-delay: 0.6s; }
+        .chart-card:nth-child(4) { animation-delay: 0.8s; }
+
+        @keyframes cardSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chart-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, var(--border) 0%, rgba(0, 0, 0, 0.05) 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 16px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: chartShimmer 2s infinite;
+        }
+
+        @keyframes chartShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            min-width: 150px;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .compare-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .action-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .action-btn {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: buttonFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .action-btn:nth-child(1) { animation-delay: 1.0s; }
+        .action-btn:nth-child(2) { animation-delay: 1.2s; }
+        .action-btn:nth-child(3) { animation-delay: 1.4s; }
+        .action-btn:nth-child(4) { animation-delay: 1.6s; }
+
+        @keyframes buttonFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header {
@@ -578,6 +1035,41 @@
             }
 
             .analyze-btn {
+                width: 100%;
+            }
+
+            .dollar-sign {
+                font-size: 80px;
+            }
+
+            .loading-text {
+                font-size: 20px;
+            }
+
+            .results-content {
+                padding: 80px 30px;
+            }
+
+            .company-name {
+                font-size: 36px;
+            }
+
+            .recommendation {
+                font-size: 28px;
+                padding: 15px 30px;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .action-btn {
                 width: 100%;
             }
         }
@@ -675,8 +1167,8 @@
                 btn.style.transform = 'scale(0.95)';
                 setTimeout(() => {
                     btn.style.transform = '';
-                    // Here you would navigate to the analysis page
-                    alert('Analyzing: ' + value);
+                    // Show loading animation and navigate to results
+                    showLoadingAnimation(value);
                 }, 200);
             } else {
                 searchBox.focus();
@@ -685,6 +1177,67 @@
                     searchBox.style.animation = '';
                 }, 500);
             }
+        }
+
+        // Loading animation function
+        function showLoadingAnimation(companyName) {
+            // Create loading overlay
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.className = 'loading-overlay';
+            loadingOverlay.innerHTML = `
+                <div class="loading-container">
+                    <div class="dollar-sign-container">
+                        <div class="dollar-sign">$</div>
+                        <div class="loading-text">Analyzing ${companyName}...</div>
+                        <div class="loading-subtext">Processing market data and financial metrics</div>
+                    </div>
+                    <div class="loading-progress">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(loadingOverlay);
+            
+            // Trigger loading animation
+            setTimeout(() => {
+                loadingOverlay.classList.add('active');
+            }, 100);
+            
+            // Simulate analysis time (3-5 seconds)
+            const analysisTime = 3000 + Math.random() * 2000;
+            
+            setTimeout(() => {
+                loadingOverlay.classList.add('fade-out');
+                setTimeout(() => {
+                    document.body.removeChild(loadingOverlay);
+                    showResultsPage(companyName);
+                }, 500);
+            }, analysisTime);
+        }
+
+        // Show results page
+        function showResultsPage(companyName) {
+            // Hide main content with fade out
+            const mainContent = document.querySelector('.main-content');
+            mainContent.style.transition = 'opacity 0.5s ease-out';
+            mainContent.style.opacity = '0';
+            
+            setTimeout(() => {
+                mainContent.style.display = 'none';
+                
+                // Create results page
+                const resultsPage = document.createElement('div');
+                resultsPage.className = 'results-page';
+                resultsPage.innerHTML = generateResultsHTML(companyName);
+                
+                document.body.appendChild(resultsPage);
+                
+                // Animate in
+                setTimeout(() => {
+                    resultsPage.classList.add('active');
+                }, 100);
+            }, 500);
         }
 
         // Add shake animation for empty search
@@ -704,6 +1257,149 @@
                 analyze();
             }
         });
+
+        // Generate results HTML
+        function generateResultsHTML(companyName) {
+            // Simulate AI analysis results
+            const isPositive = Math.random() > 0.4; // 60% chance of positive recommendation
+            const recommendation = isPositive ? "Worth Investing" : "Not Recommended";
+            const recommendationClass = isPositive ? "positive" : "negative";
+            
+            const explanations = {
+                positive: [
+                    "Based on comprehensive analysis of financial metrics, market trends, and competitive positioning, this company demonstrates strong fundamentals with consistent revenue growth, healthy profit margins, and a robust balance sheet. The technical indicators suggest upward momentum, while fundamental analysis reveals undervaluation compared to industry peers.",
+                    "Our AI analysis indicates this investment opportunity aligns with current market conditions and shows promising long-term potential. The company's innovative approach, strong management team, and expanding market share position it well for future growth.",
+                    "Financial modeling suggests this stock is trading below its intrinsic value, presenting an attractive entry point for investors. The company's diversified revenue streams and strong cash flow generation provide stability during market volatility."
+                ],
+                negative: [
+                    "After thorough analysis of financial statements, market conditions, and industry trends, our AI has identified several red flags including declining revenue growth, increasing debt levels, and competitive pressures that suggest this investment carries significant risk.",
+                    "The technical analysis reveals bearish patterns and weakening momentum, while fundamental metrics indicate overvaluation relative to the company's growth prospects. Market volatility and sector headwinds further compound the investment risk.",
+                    "Our comprehensive evaluation shows concerning trends in key financial ratios, management effectiveness, and market positioning that suggest this investment may not align with prudent risk management principles."
+                ]
+            };
+            
+            const randomExplanation = explanations[isPositive ? 'positive' : 'negative'][Math.floor(Math.random() * explanations[isPositive ? 'positive' : 'negative'].length)];
+            
+            return `
+                <div class="results-content">
+                    <div class="results-header">
+                        <h1 class="company-name">${companyName.toUpperCase()}</h1>
+                        <div class="recommendation ${recommendationClass}">${recommendation}</div>
+                        <p class="explanation">${randomExplanation}</p>
+                    </div>
+                    
+                    <div class="charts-container">
+                        <div class="chart-card">
+                            <h3 class="chart-title">Price Performance Analysis</h3>
+                            <div class="chart-placeholder">
+                                📈 Interactive Price Chart<br>
+                                <small>6-month performance with technical indicators</small>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3 class="chart-title">Financial Health Metrics</h3>
+                            <div class="chart-placeholder">
+                                📊 Financial Dashboard<br>
+                                <small>P/E Ratio, Debt-to-Equity, ROE, and more</small>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3 class="chart-title">Market Sentiment</h3>
+                            <div class="chart-placeholder">
+                                🎯 Sentiment Analysis<br>
+                                <small>News sentiment, analyst ratings, social media buzz</small>
+                            </div>
+                        </div>
+                        
+                        <div class="chart-card">
+                            <h3 class="chart-title">Risk Assessment</h3>
+                            <div class="chart-placeholder">
+                                ⚖️ Risk Profile<br>
+                                <small>Volatility, beta, and risk-return analysis</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="action-btn back-btn" onclick="goBack()">
+                            ← Back to Analysis
+                        </button>
+                        <button class="action-btn download-btn" onclick="downloadReport('${companyName}')">
+                            📄 Download Report
+                        </button>
+                        <button class="action-btn refresh-btn" onclick="refreshAnalysis('${companyName}')">
+                            🔄 Refresh Analysis
+                        </button>
+                        <button class="action-btn compare-btn" onclick="compareStocks('${companyName}')">
+                            ⚖️ Compare Stocks
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Action button functions
+        function downloadReport(companyName) {
+            // Simulate download
+            const btn = event.target;
+            btn.innerHTML = '📄 Downloading...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.innerHTML = '📄 Download Complete';
+                setTimeout(() => {
+                    btn.innerHTML = '📄 Download Report';
+                    btn.disabled = false;
+                }, 2000);
+            }, 2000);
+        }
+
+        function refreshAnalysis(companyName) {
+            // Show loading animation again
+            const resultsPage = document.querySelector('.results-page');
+            resultsPage.classList.add('fade-out');
+            
+            setTimeout(() => {
+                document.body.removeChild(resultsPage);
+                showLoadingAnimation(companyName);
+            }, 500);
+        }
+
+        function compareStocks(companyName) {
+            // Simulate comparison feature
+            const btn = event.target;
+            btn.innerHTML = '⚖️ Opening Comparison...';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                btn.innerHTML = '⚖️ Comparison Ready';
+                setTimeout(() => {
+                    btn.innerHTML = '⚖️ Compare Stocks';
+                    btn.disabled = false;
+                }, 2000);
+            }, 1500);
+        }
+
+        function goBack() {
+            const resultsPage = document.querySelector('.results-page');
+            resultsPage.classList.add('fade-out');
+            
+            setTimeout(() => {
+                document.body.removeChild(resultsPage);
+                
+                // Show main content again
+                const mainContent = document.querySelector('.main-content');
+                mainContent.style.display = 'block';
+                mainContent.style.opacity = '0';
+                mainContent.style.transition = 'opacity 0.5s ease-in';
+                
+                setTimeout(() => {
+                    mainContent.style.opacity = '1';
+                }, 100);
+            }, 500);
+        }
 
         // Add subtle parallax effect on mouse move for premium feel
         document.addEventListener('mousemove', (e) => {
