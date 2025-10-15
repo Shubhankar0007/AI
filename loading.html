@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyzing Investment...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --text-primary: #0a0a0a;
+            --accent: #1a1a1a;
+            --transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body.dark-mode {
+            --bg-primary: #0a0a0a;
+            --text-primary: #f0f0f0;
+            --accent: #ffffff;
+        }
+
+        /* Ambient background animation */
+        .ambient-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(26, 26, 26, 0.02) 0%, transparent 60%);
+            animation: ambientPulse 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body.dark-mode .ambient-background {
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+        }
+
+        @keyframes ambientPulse {
+            0%, 100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Main loading container */
+        .loading-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 60px;
+        }
+
+        /* Dollar sign container */
+        .dollar-container {
+            position: relative;
+            width: 200px;
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1200px;
+        }
+
+        /* Dollar sign SVG styling */
+        .dollar-sign {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            filter: drop-shadow(0 10px 40px rgba(0, 0, 0, 0.1));
+        }
+
+        body.dark-mode .dollar-sign {
+            filter: drop-shadow(0 10px 40px rgba(255, 255, 255, 0.15));
+        }
+
+        /* SVG path for dollar sign */
+        .dollar-path {
+            fill: none;
+            stroke: var(--accent);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 1200;
+            stroke-dashoffset: 1200;
+            animation: drawDollar 2.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+            transform-origin: center;
+        }
+
+        @keyframes drawDollar {
+            0% {
+                stroke-dashoffset: 1200;
+                opacity: 0;
+            }
+            15% {
+                opacity: 1;
+            }
+            50% {
+                stroke-dashoffset: 0;
+                opacity: 1;
+            }
+            85% {
+                opacity: 1;
+            }
+            100% {
+                stroke-dashoffset: 0;
+                opacity: 0;
+            }
+        }
+
+        /* Gradient overlay for dollar sign */
+        .dollar-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                var(--bg-primary) 100%
+            );
+            pointer-events: none;
+            animation: gradientReveal 2.5s ease-in-out infinite;
+        }
+
+        @keyframes gradientReveal {
+            0% {
+                opacity: 1;
+                transform: translateY(-100%);
+            }
+            50% {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(-100%);
+            }
+        }
+
+        /* Glow effect behind dollar */
+        .dollar-glow {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: radial-gradient(circle, rgba(26, 26, 26, 0.15) 0%, transparent 70%);
+            animation: glowPulse 2.5s ease-in-out infinite;
+            filter: blur(40px);
+        }
+
+        body.dark-mode .dollar-glow {
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                opacity: 0.3;
+                transform: scale(0.9);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Rotating ring around dollar */
+        .orbit-ring {
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: rotateRing 8s linear infinite;
+        }
+
+        .orbit-ring::before,
+        .orbit-ring::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+        }
+
+        .orbit-ring::before {
+            transform: translate(-50%, -50%) translateX(-160px);
+        }
+
+        .orbit-ring::after {
+            transform: translate(-50%, -50%) translateX(160px);
+        }
+
+        @keyframes rotateRing {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Loading text */
+        .loading-text-container {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .loading-text {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-primary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+
+        .loading-subtext {
+            font-size: 16px;
+            color: var(--text-primary);
+            opacity: 0.5;
+            font-weight: 500;
+            letter-spacing: 1px;
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* Animated dots */
+        .loading-dots {
+            display: inline-flex;
+            gap: 8px;
+            margin-left: 8px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: dotBounce 1.4s ease-in-out infinite;
+        }
+
+        .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes dotBounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+            30% {
+                transform: translateY(-12px);
+                opacity: 1;
+            }
+        }
+
+        /* Progress bar */
+        .progress-container {
+            width: 400px;
+            height: 4px;
+            background: rgba(26, 26, 26, 0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body.dark-mode .progress-container {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, 
+                var(--accent) 0%, 
+                var(--accent) 50%,
+                transparent 100%
+            );
+            background-size: 200% 100%;
+            border-radius: 10px;
+            animation: progressFlow 2s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(26, 26, 26, 0.3);
+        }
+
+        body.dark-mode .progress-bar {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes progressFlow {
+            0% {
+                width: 20%;
+                background-position: 0% 0%;
+            }
+            50% {
+                width: 80%;
+                background-position: 100% 0%;
+            }
+            100% {
+                width: 20%;
+                background-position: 0% 0%;
+            }
+        }
+
+        /* Particle effects */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0);
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(1);
+            }
+        }
+
+        /* Generate particles */
+        .particle:nth-child(1) { --tx: 50px; --ty: -100px; left: 50%; top: 50%; animation-delay: 0s; }
+        .particle:nth-child(2) { --tx: -60px; --ty: -80px; left: 45%; top: 55%; animation-delay: 0.5s; }
+        .particle:nth-child(3) { --tx: 70px; --ty: -90px; left: 55%; top: 50%; animation-delay: 1s; }
+        .particle:nth-child(4) { --tx: -50px; --ty: -110px; left: 48%; top: 52%; animation-delay: 1.5s; }
+        .particle:nth-child(5) { --tx: 80px; --ty: -70px; left: 52%; top: 48%; animation-delay: 2s; }
+        .particle:nth-child(6) { --tx: -70px; --ty: -95px; left: 50%; top: 55%; animation-delay: 2.5s; }
+
+        /* Subtle shimmer overlay */
+        .shimmer-overlay {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 70%
+            );
+            animation: shimmerMove 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmerMove {
+            0% {
+                transform: translateX(-100%) translateY(-100%);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dollar-container {
+                width: 150px;
+                height: 210px;
+            }
+
+            .orbit-ring {
+                width: 240px;
+                height: 240px;
+            }
+
+            .progress-container {
+                width: 300px;
+            }
+
+            .loading-text {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-background"></div>
+
+    <div class="loading-container">
+        <!-- Particles -->
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+
+        <!-- Dollar sign with effects -->
+        <div class="dollar-container">
+            <div class="dollar-glow"></div>
+            <div class="orbit-ring"></div>
+            <div class="shimmer-overlay"></div>
+            
+            <svg class="dollar-sign" viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
+                <path class="dollar-path" d="
+                    M 100 20 
+                    L 100 260
+                    M 100 40
+                    C 60 40, 50 60, 50 85
+                    C 50 110, 70 120, 100 130
+                    C 130 140, 150 150, 150 175
+                    C 150 200, 140 220, 100 220
+                    C 60 220, 50 200, 50 180
+                    M 50 85
+                    L 140 85
+                    M 60 175
+                    L 150 175
+                "/>
+            </svg>
+            <div class="dollar-gradient"></div>
+        </div>
+
+        <!-- Loading text -->
+        <div class="loading-text-container">
+            <div class="loading-text">
+                Analyzing Investment
+                <span class="loading-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </span>
+            </div>
+            <div class="loading-subtext">PROCESSING MARKET DATA</div>
+            
+            <!-- Progress bar -->
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check for dark mode preference from previous page
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // Get company name from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const company = urlParams.get('company') || 'Unknown Company';
+
+        // Simulate loading time and redirect to results
+        setTimeout(() => {
+            window.location.href = `results.html?company=${encodeURIComponent(company)}`;
+        }, 4000); // 4 seconds loading time - adjust as needed
+    </script>
+</body>
+</html>
